@@ -9,7 +9,7 @@ const router = useRouter()
   <div class="">
     <h1>Current Project</h1>
     <p>
-      {{ router.currentRoute.value.params.id }}
+      {{ router.currentRoute.value.params }}
     </p>
     <RouterLink to="/projects">go back to projects</RouterLink>
   </div>

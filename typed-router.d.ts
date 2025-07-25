@@ -22,5 +22,6 @@ declare module 'vue-router/auto-routes' {
     '/[...cathAll]': RouteRecordInfo<'/[...cathAll]', '/:cathAll(.*)', { cathAll: ParamValue<true> }, { cathAll: ParamValue<false> }>,
     '/Projects/': RouteRecordInfo<'/Projects/', '/Projects', Record<never, never>, Record<never, never>>,
     '/Projects/[id]': RouteRecordInfo<'/Projects/[id]', '/Projects/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/Tasks/': RouteRecordInfo<'/Tasks/', '/Tasks', Record<never, never>, Record<never, never>>,
   }
 }
