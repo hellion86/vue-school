@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { supabase } from '@/lib/supabaseClient';
 import { onMounted, ref } from 'vue';
+
 import type { Tables } from '../../../database/types'
 
 const getTasks = async ()  => {
