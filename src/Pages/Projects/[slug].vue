@@ -7,9 +7,9 @@ const router = useRouter()
 
 <template>
   <div class="">
-    <h1>Current Project</h1>
+    <h1>Project</h1>
     <p>
-      {{ router.currentRoute.value.params }}
+      {{ router.currentRoute.value.params?.slug }}
     </p>
     <RouterLink to="/projects">go back to projects</RouterLink>
   </div>

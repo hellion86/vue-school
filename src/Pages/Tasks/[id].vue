@@ -2,11 +2,8 @@
 </script>
 
 <template>
-  <div class="">
-    <h1>Home page</h1>
+  <div>
+    <h1>Task</h1>
   </div>
+
 </template>
-
-
-
-
