@@ -3,23 +3,20 @@ import { supabase } from '@/lib/supabaseClient';
 
 import type { Tables } from '../../../database/types'
 import type { ColumnDef } from '@tanstack/vue-table';
-import DataTable from '@/components/ui/data-table/DataTable.vue';
 import { RouterLink } from 'vue-router';
+import { usePageStore } from '@/stores/page';
 
 const getTasks = async ()  => {
   const { data } = await supabase.from('tasks')
     .select()
-
   return data 
-
 }
+
+usePageStore().pageData.title = 'Tasks Page'
 
 const Tasks = ref<Tables<'tasks'>[] | null>(null)
 
-onMounted(async () => {
-  Tasks.value = await getTasks()
-})
-
+Tasks.value = await getTasks()
 
 const columns: ColumnDef<Tables<'tasks'>>[] = [
   {
