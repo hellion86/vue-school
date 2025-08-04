@@ -8,7 +8,14 @@ import { usePageStore } from '@/stores/page';
 
 const getTasks = async ()  => {
   const { data } = await supabase.from('tasks')
-    .select()
+    .select(`
+    *,
+    projects ( 
+      id,
+      name,
+      slug
+    )
+    `)
   return data 
 }
 
@@ -38,6 +45,13 @@ const columns: ColumnDef<Tables<'tasks'>>[] = [
     accessorKey: 'project_id',
     header: () => h('div', { class: 'text-left' }, 'Project ID'),
     cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('project_id')),
+  },
+  {
+    accessorKey: 'projects',
+    header: () => h('div', { class: 'text-left' }, 'Project link'),
+    cell: ({ row }) => { 
+      return h(RouterLink, {to: `/projects/${row.original.projects.slug}`, class: 'text-left font-medium' }, () => row.getValue('projects')?.name)
+    }
   },
   {
     accessorKey: 'collaborators',
