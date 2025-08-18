@@ -23,11 +23,10 @@ export default defineConfig({
     }),
     AutoImport({
       include: [
-        /\.[tj]sx?$/,
+        /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
         /\.vue$/,
-        /\.vue\?vue/,
-        /\.vue\.[tj]sx?\?vue/,
-        /\.md$/,
+        /\.vue\?vue/, // .vue
+        /\.md$/ // .md
       ],
       imports: [
         'vue',

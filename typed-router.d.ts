@@ -19,7 +19,7 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
-    '/[...cathAll]': RouteRecordInfo<'/[...cathAll]', '/:cathAll(.*)', { cathAll: ParamValue<true> }, { cathAll: ParamValue<false> }>,
+    '/[...catchAll]': RouteRecordInfo<'/[...catchAll]', '/:catchAll(.*)', { catchAll: ParamValue<true> }, { catchAll: ParamValue<false> }>,
     '/Projects/': RouteRecordInfo<'/Projects/', '/Projects', Record<never, never>, Record<never, never>>,
     '/Projects/[slug]': RouteRecordInfo<'/Projects/[slug]', '/Projects/:slug', { slug: ParamValue<true> }, { slug: ParamValue<false> }>,
     '/Tasks/': RouteRecordInfo<'/Tasks/', '/Tasks', Record<never, never>, Record<never, never>>,
