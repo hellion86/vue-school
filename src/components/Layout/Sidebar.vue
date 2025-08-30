@@ -13,10 +13,13 @@ const accountLinks = [
   { title: 'Sign out', icon: 'lucide:log-out' },
 ]
 
+const router = useRouter()
+
 const executeAction = async (linkTitle: string) => {
   if (linkTitle === 'Sign out') {
     const  { logOut } = await import('@/utils/supaAuth')
-    await logOut()
+    const isLogOut = await logOut()
+    if (isLogOut) router.push('/login')
   }
 }
 

@@ -6,11 +6,20 @@ const formData = ref({
   password: '',
 })
 
+watch((formData.value), () => {
+  _error.value = ''
+}, {
+  deep: true
+})
 const router = useRouter()
+const _error = ref('')
 
 const signin = async () => {
-  const isLogin = await login(formData.value)
-  if (isLogin) router.push('/')
+  const { error } = await login(formData.value)
+
+  if (!error) return router.push('/')
+
+  _error.value = error.message
 }
 
 </script>
@@ -31,15 +40,24 @@ const signin = async () => {
         <form class="grid gap-4" @submit.prevent="signin">
           <div class="grid gap-2">
             <Label id="email" class="text-left">Email</Label>
-            <Input type="email" placeholder="johndoe19@example.com" required v-model="formData.email"/>
+            <Input type="email" placeholder="johndoe19@example.com" required v-model="formData.email"
+            :class="{'border-red-500': _error}"
+            />
           </div>
           <div class="grid gap-2">
             <div class="flex items-center">
               <Label id="password">Password</Label>
               <a href="#" class="inline-block ml-auto text-xs underline"> Forgot your password? </a>
             </div>
-            <Input id="password" type="password" autocomplete required v-model="formData.password"/>
+            <Input id="password" type="password" autocomplete required v-model="formData.password"
+            :class="{'border-red-500': _error}"
+            />
           </div>
+          <ul class="text-sm text-left text-red-500" v-if="_error">
+            <li class="list-disc">
+              {{ _error }}
+            </li>
+          </ul>
           <Button type="submit" class="w-full"> Login </Button>
         </form>
         <div class="mt-4 text-sm text-center">
