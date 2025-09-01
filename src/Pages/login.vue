@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { login } from '@/utils/supaAuth';
+import { watchDebounced} from '@vueuse/core'
+
+const { serverError, handleServerError, realtimeErrors, handleLoginForm } = useFormErrors()
 
 const formData = ref({
   email: '',
@@ -7,19 +10,25 @@ const formData = ref({
 })
 
 watch((formData.value), () => {
-  _error.value = ''
+  serverError.value = ''
 }, {
   deep: true
 })
 const router = useRouter()
-const _error = ref('')
+
+watchDebounced((formData), () => {
+  handleLoginForm(formData.value)
+}, {
+  debounce: 1000,
+  deep: true,
+})
 
 const signin = async () => {
   const { error } = await login(formData.value)
 
   if (!error) return router.push('/')
 
-  _error.value = error.message
+  handleServerError(error)
 }
 
 </script>
@@ -41,8 +50,13 @@ const signin = async () => {
           <div class="grid gap-2">
             <Label id="email" class="text-left">Email</Label>
             <Input type="email" placeholder="johndoe19@example.com" required v-model="formData.email"
-            :class="{'border-red-500': _error}"
+            :class="{'border-red-500': serverError}"
             />
+          <ul class="text-sm text-left text-red-500" v-if="realtimeErrors?.email.length">
+            <li class="list-disc" v-for="(err, i) in realtimeErrors?.email" :key="i">
+              {{ err }}
+            </li>
+          </ul>
           </div>
           <div class="grid gap-2">
             <div class="flex items-center">
@@ -50,12 +64,17 @@ const signin = async () => {
               <a href="#" class="inline-block ml-auto text-xs underline"> Forgot your password? </a>
             </div>
             <Input id="password" type="password" autocomplete required v-model="formData.password"
-            :class="{'border-red-500': _error}"
+            :class="{'border-red-500': serverError}"
             />
+            <ul class="text-sm text-left text-red-500" v-if="realtimeErrors?.password.length">
+            <li class="list-disc" v-for="(err, i) in realtimeErrors?.password" :key="i">
+              {{ err }}
+            </li>
+          </ul>
           </div>
-          <ul class="text-sm text-left text-red-500" v-if="_error">
+          <ul class="text-sm text-left text-red-500" v-if="serverError">
             <li class="list-disc">
-              {{ _error }}
+              {{ serverError }}
             </li>
           </ul>
           <Button type="submit" class="w-full"> Login </Button>
