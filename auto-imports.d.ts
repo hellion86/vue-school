@@ -70,6 +70,7 @@ declare global {
   const useMouse: typeof import('@vueuse/core')['useMouse']
   const useMyFetch: typeof import('@vueuse/core')['useFetch']
   const usePageStore: typeof import('./src/stores/page')['usePageStore']
+  const useProjectsStore: typeof import('./src/stores/loaders/projects')['useProjectsStore']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
   const useSlots: typeof import('vue')['useSlots']
