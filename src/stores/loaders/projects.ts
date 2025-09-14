@@ -5,18 +5,19 @@ import { useMemoize } from '@vueuse/core'
 
 
 export const useProjectsStore = defineStore('projects-store', () => {
-  const projectsData = ref<Projects>([])
+  const projects = ref<Projects>([])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loadProjects = useMemoize(async (key: string) => await projectsQuery)
+
   const validateCache = () => {
-    if (projectsData.value?.length) {
+    if (projects.value?.length) {
       projectsQuery.then(({ data, error }) => {
-        if (JSON.stringify(projectsData.value) === JSON.stringify(data)) {
+        if (JSON.stringify(projects.value) === JSON.stringify(data)) {
           return
         }
         else {
           loadProjects.delete('projects')
-          if (!error && data) projectsData.value = data
+          if (!error && data) projects.value = data
         }
       })
     }
@@ -27,13 +28,13 @@ export const useProjectsStore = defineStore('projects-store', () => {
 
     if (error) useErrorStore().setError({ error, customCode: status })
 
-    if (data) projectsData.value = data
+    if (data) projects.value = data
 
     validateCache()
   }
 
   return {
     getProjects,
-    projectsData
+    projects
   }
 })
