@@ -12,11 +12,11 @@ await getProjects()
 
 const { getGroupedCollabs, groupedCollabs } = useCollabs()
 
+getGroupedCollabs(projects.value ?? [])
 
-await getGroupedCollabs(projects.value)
-console.log(groupedCollabs)
+const columnsWithCollabs = projectsColumns(groupedCollabs)
 </script>
 
 <template>
-  <DataTable v-if="projects" :columns="projectsColumns" :data="projects" />
+  <DataTable v-if="projects" :columns="columnsWithCollabs" :data="projects" />
 </template>
