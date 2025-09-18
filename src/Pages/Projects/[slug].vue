@@ -1,8 +1,9 @@
 <script setup lang="ts">
 const route = useRoute('/Projects/[slug]')
+const router = useRouter()
 const projectsLoader = useProjectsStore()
 const { project } = storeToRefs(projectsLoader)
-const { getProject } = projectsLoader
+const { getProject, updateProject } = projectsLoader
 
 watch(
   () => project.value?.name,
@@ -12,23 +13,35 @@ watch(
 )
 
 await getProject(route.params.slug)
+
+const updateProjectAndNavigate = async () => {
+  if (!project.value?.name) return
+
+  const newSlag = await updateProject()
+  router.push(`/Projects/${newSlag}`)
+}
+ 
 </script>
 
 <template>
   <Table v-if="project">
     <TableRow>
       <TableHead> Name </TableHead>
-      <TableCell>{{ project.name }} </TableCell>
+      <TableCell>
+       <AppInPlaceEditText v-model="project.name" @commit="updateProjectAndNavigate"/>  
+      </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Description </TableHead>
       <TableCell>
-        {{ project.description }}
+          <AppInPlaceEditText v-model="project.description" @commit="updateProject"/>  
       </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Status </TableHead>
-      <TableCell>{{ project.status }}</TableCell>
+      <TableCell>
+        <AppPlaceEditStatus v-model="project.status" @commit="updateProject"/>
+      </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Collaborators </TableHead>

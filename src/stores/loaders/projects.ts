@@ -1,4 +1,4 @@
-import { projectsQuery, projectQuery } from '@/utils/supaQueries'
+import { projectsQuery, projectQuery, updateProjectQuery } from '@/utils/supaQueries'
 
 import type { Projects, Project } from '@/utils/supaQueries'
 import { useMemoize } from '@vueuse/core'
@@ -55,10 +55,26 @@ export const useProjectsStore = defineStore('projects-store', () => {
     validateCache({ ref: project, query: projectQuery, key: slug, loaderFn: loadProject })
   }
 
+  const updateProject = async () => {
+    if (!project.value) return
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { tasks, id, ...projectProperties } = project.value
+
+    if (projectProperties.slug !== projectProperties.name) {
+      projectProperties.slug = projectProperties.name.split(' ').join('-').trim()
+    }
+
+    await updateProjectQuery(projectProperties, project.value.id)
+
+    return projectProperties.slug
+  }
+
   return {
     getProjects,
     projects,
     getProject,
-    project
+    project,
+    updateProject
   }
 })
