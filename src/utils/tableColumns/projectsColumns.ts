@@ -34,15 +34,15 @@ export const projectsColumns = (collabs: Ref<GroupedCollabs>): ColumnDef<Project
           { class: 'text-left font-medium h-20 flex items-center' },
           collabs.value[row.original.id]
             ? collabs.value[row.original.id].map((collab) => {
-                return h(RouterLink, { to: `/users/${collab.username}` }, () => {
-                  return h(Avatar, { class: 'hover:scale-110 transition-transform' }, () =>
-                    h(AvatarImage, { src: collab.avatar_url || '' })
-                  )
-                })
+              return h(RouterLink, { to: `/user/${collab.username}` }, () => {
+                return h(Avatar, { class: 'hover:scale-110 transition-transform' }, () =>
+                  h(AvatarImage, { src: collab.avatar_url || '' })
+                )
               })
+            })
             : row.original.collaborators.map(() => {
-                return h(Avatar, { class: 'animate-pulse' }, () => h(AvatarFallback))
-              })
+              return h(Avatar, { class: 'animate-pulse' }, () => h(AvatarFallback))
+            })
         )
       }
     }
