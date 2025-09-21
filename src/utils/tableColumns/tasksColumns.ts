@@ -1,8 +1,12 @@
 import type { ColumnDef } from "@tanstack/vue-table"
 import type { TasksWithProjects } from "../supaQueries"
 import { RouterLink } from "vue-router"
+import type { GroupedCollabs } from "@/types/GroupedCollabs"
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import AvatarImage from '@/components/ui/avatar/AvatarImage.vue'
+import AppInPlaceEditStatus from '@/components/AppInPlaceEdit/AppPlaceEditStatus.vue'
 
-export const tasksColumns: ColumnDef<TasksWithProjects[0]>[] = [
+export const tasksColumns = (collabs: Ref<GroupedCollabs>): ColumnDef<TasksWithProjects[0]>[] => [
   {
     accessorKey: 'name',
     header: () => h('div', { class: 'text-left' }, 'Name'),
@@ -11,21 +15,23 @@ export const tasksColumns: ColumnDef<TasksWithProjects[0]>[] = [
   {
     accessorKey: 'status',
     header: () => h('div', { class: 'text-left' }, 'Status'),
-    cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('status')),
+    cell: ({ row }) => h('div', { class: 'text-left font-medium' },
+      h(AppInPlaceEditStatus, { modelValue: row.original.status, readonly: true })
+    )
   },
   {
     accessorKey: 'due_date',
     header: () => h('div', { class: 'text-left' }, 'Due Date'),
     cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('due_date')),
   },
-  {
-    accessorKey: 'project_id',
-    header: () => h('div', { class: 'text-left' }, 'Project ID'),
-    cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('project_id')),
-  },
+  // {
+  //   accessorKey: 'project_id',
+  //   header: () => h('div', { class: 'text-left' }, 'Project ID'),
+  //   cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('project_id')),
+  // },
   {
     accessorKey: 'projects',
-    header: () => h('div', { class: 'text-left' }, 'Project link'),
+    header: () => h('div', { class: 'text-left w-full' }, 'Project'),
     cell: ({ row }) => {
       return row.original.projects && h(RouterLink, { to: `/projects/${row.original.projects.slug}`, class: 'text-left font-medium' },
         () => row.original.projects?.name)
@@ -34,6 +40,22 @@ export const tasksColumns: ColumnDef<TasksWithProjects[0]>[] = [
   {
     accessorKey: 'collaborators',
     header: () => h('div', { class: 'text-left' }, 'Collaborators'),
-    cell: ({ row }) => h('div', { class: 'text-left font-medium' }, JSON.stringify(row.getValue('collaborators'))),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-left font-medium h-20 flex items-center' },
+        collabs.value[row.original.id]
+          ? collabs.value[row.original.id].map((collab) => {
+            return h(RouterLink, { to: `/user/${collab.username}` }, () => {
+              return h(Avatar, { class: 'hover:scale-110 transition-transform' }, () =>
+                h(AvatarImage, { src: collab.avatar_url || '' })
+              )
+            })
+          })
+          : row.original.collaborators.map(() => {
+            return h(Avatar, { class: 'animate-pulse' }, () => h(AvatarFallback))
+          })
+      )
+    }
   },
 ]

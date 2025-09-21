@@ -20,6 +20,10 @@ const updateProjectAndNavigate = async () => {
   const newSlag = await updateProject()
   router.push(`/Projects/${newSlag}`)
 }
+
+const { getProfilesByIds } = useCollabs()
+ 
+const collabs = project.value?.collaborators ? await getProfilesByIds(project.value?.collaborators) : []
  
 </script>
 
@@ -34,7 +38,7 @@ const updateProjectAndNavigate = async () => {
     <TableRow>
       <TableHead> Description </TableHead>
       <TableCell>
-          <AppInPlaceEditText v-model="project.description" @commit="updateProject"/>  
+          <AppInPlaceEditTextarea v-model="project.description" @commit="updateProject"/>  
       </TableCell>
     </TableRow>
     <TableRow>
@@ -49,11 +53,11 @@ const updateProjectAndNavigate = async () => {
         <div class="flex">
           <Avatar
             class="-mr-4 border border-primary hover:scale-110 transition-transform"
-            v-for="collab in project.collaborators"
-            :key="collab"
+            v-for="collab in collabs"
+            :key="collab.id"
           >
-            <RouterLink class="w-full h-full flex items-center justify-center" to="">
-              <AvatarImage src="" alt="" />
+            <RouterLink class="w-full h-full flex items-center justify-center" :to="{name: '/user/[username]', params: {username: collab.username}}">
+              <AvatarImage :src="collab.avatar_url || ''" alt="" /> 
               <AvatarFallback> </AvatarFallback>
             </RouterLink>
           </Avatar>
@@ -75,9 +79,15 @@ const updateProjectAndNavigate = async () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow v-for="task in project?.tasks" :key="task.id">
-              <TableCell> {{ task.name }} </TableCell>
-              <TableCell> {{ task.status }} </TableCell>
+            <TableRow v-for="task in project.tasks" :key="task.id">
+              <TableCell class="p-0"> 
+              <RouterLink :to="{name: '/Tasks/[id]', params: {id: task.id}}" class="text-left block hover:bg-muted p-4">
+                {{ task.name }} 
+              </RouterLink>  
+              </TableCell>
+              <TableCell> 
+                <AppPlaceEditStatus readonly :model-value="task.status" />
+               </TableCell>
               <TableCell> {{ task.due_date }} </TableCell>
             </TableRow>
           </TableBody>

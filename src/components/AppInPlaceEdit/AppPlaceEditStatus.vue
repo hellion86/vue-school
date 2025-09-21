@@ -2,10 +2,18 @@
 const value = defineModel<'in-progress' | 'completed'>()
 const emit = defineEmits(['commit'])
 
+interface Props {
+  readonly?: boolean
+}
+const Props = withDefaults(defineProps<Props>(), { readonly: false })
+
 const toggleValue = () => {
+  if (Props.readonly) return 
+
   value.value = value.value === 'completed' ? "in-progress" : 'completed'
   emit('commit')
 }
+
 
 </script>
 

@@ -15,6 +15,7 @@ const { getGroupedCollabs, groupedCollabs } = useCollabs()
 getGroupedCollabs(projects.value ?? [])
 
 const columnsWithCollabs = projectsColumns(groupedCollabs)
+console.log(projects.value)
 </script>
 
 <template>

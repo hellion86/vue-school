@@ -1,7 +1,9 @@
 import { supabase } from "@/lib/supabaseClient";
 import type { QueryData } from "@supabase/supabase-js";
 
+// TASKS
 export type TasksWithProjects = QueryData<typeof tasksWithProjectQuery>
+export type Task = QueryData<ReturnType<typeof taskQuery>>
 
 export const tasksWithProjectQuery = supabase.from('tasks').select(`
     *,
@@ -12,6 +14,21 @@ export const tasksWithProjectQuery = supabase.from('tasks').select(`
     )
   `)
 
+export const updateTaskQuery = (updateTask = {}, id: number) => {
+  return supabase.from('tasks').update(updateTask).eq('id', id)
+}
+
+export const taskQuery = (id: number) => supabase.from('tasks').select(`
+  *,
+  projects (
+    id,
+    name,
+    slug
+  )
+`).eq('id', id).single()
+
+
+// PROJECTS
 export const projectsQuery = supabase.from('projects').select()
 export type Projects = QueryData<typeof projectsQuery>
 
@@ -34,21 +51,11 @@ export const updateProjectSlugQuery = (updateProject = {}, slug: string) => {
   return supabase.from('projects').update(updateProject).eq('slug', slug)
 }
 
-export const taskQuery = (id: number) => supabase.from('tasks').select(`
-  *,
-  projects (
-    id,
-    name,
-    slug
-  )
-`).eq('id', id).single()
-
-export type Task = QueryData<ReturnType<typeof taskQuery>>
+// PROFILE
 
 export const profileQuery = ({ column, value }: { column: string, value: string }) => {
   return supabase.from("profiles").select().eq(column, value).single()
 }
-
 
 export const groupedProfilesQuery = (userIds: string[]) => {
   return supabase.from('profiles')

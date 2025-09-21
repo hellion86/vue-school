@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { tasksWithProjectQuery, type TasksWithProjects } from '@/utils/supaQueries';
 import { usePageStore } from '@/stores/page';
 import { tasksColumns } from '@/utils/tableColumns/tasksColumns';
 
-const Tasks = ref<TasksWithProjects | null>(null)
 
 usePageStore().pageData.title = 'Tasks Page'
+const tasksLoader = useTasksStore()
+const { tasksWithProjects } = storeToRefs(tasksLoader)
+const { getTasksWithProjects } = tasksLoader
+await getTasksWithProjects()
 
-const getTasks = async () => {
-  const { data, error, status } = await tasksWithProjectQuery
+const { getGroupedCollabs, groupedCollabs } = useCollabs()
 
-  if (error)  useErrorStore().setError({ error, customCode: status})
+getGroupedCollabs(tasksWithProjects.value ?? [])
 
-  Tasks.value = data
-}
-
-await getTasks()
-
+const columnsWithCollabs = tasksColumns(groupedCollabs)
+console.log(tasksWithProjects.value)
 </script>
 <template>
-  <DataTable v-if="Tasks" :columns="tasksColumns" :data="Tasks" />
+  <DataTable v-if="tasksWithProjects" :columns="columnsWithCollabs" :data="tasksWithProjects" />
 </template>
