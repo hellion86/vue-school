@@ -1,4 +1,4 @@
-import { tasksWithProjectQuery, taskQuery, updateTaskQuery } from '@/utils/supaQueries'
+import { tasksWithProjectQuery, taskQuery, updateTaskQuery, deleteTaskQuery } from '@/utils/supaQueries'
 
 import type { TasksWithProjects, Task } from '@/utils/supaQueries'
 import { useMemoize } from '@vueuse/core'
@@ -65,11 +65,18 @@ export const useTasksStore = defineStore('tasks-store', () => {
     await updateTaskQuery(taskProperties, task.value.id)
   }
 
+  const deleteTask = async () => {
+    if (!task.value) return
+
+    await deleteTaskQuery(task.value.id)
+  }
+
   return {
     tasksWithProjects,
     task,
     getTasksWithProjects,
     getTask,
     updateTask,
+    deleteTask,
   }
 })

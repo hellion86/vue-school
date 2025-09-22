@@ -14,7 +14,6 @@ const { getGroupedCollabs, groupedCollabs } = useCollabs()
 getGroupedCollabs(tasksWithProjects.value ?? [])
 
 const columnsWithCollabs = tasksColumns(groupedCollabs)
-console.log(tasksWithProjects.value)
 </script>
 <template>
   <DataTable v-if="tasksWithProjects" :columns="columnsWithCollabs" :data="tasksWithProjects" />

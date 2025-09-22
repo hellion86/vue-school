@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
+import type { CreateNewTask } from "@/types/CreateNewTask";
 import type { QueryData } from "@supabase/supabase-js";
 
 // TASKS
@@ -27,6 +28,13 @@ export const taskQuery = (id: number) => supabase.from('tasks').select(`
   )
 `).eq('id', id).single()
 
+export const createNewTask = (newTask: CreateNewTask) => {
+  return supabase.from('tasks').insert(newTask)
+}
+
+export const deleteTaskQuery = (id: number) => {
+  return supabase.from('tasks').delete().eq('id', id)
+}
 
 // PROJECTS
 export const projectsQuery = supabase.from('projects').select()
@@ -52,7 +60,6 @@ export const updateProjectSlugQuery = (updateProject = {}, slug: string) => {
 }
 
 // PROFILE
-
 export const profileQuery = ({ column, value }: { column: string, value: string }) => {
   return supabase.from("profiles").select().eq(column, value).single()
 }
