@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { usePageStore } from '@/stores/page'
-import { projectsColumns } from '@/utils/tableColumns/projectsColumns'
+  import { usePageStore } from '@/stores/page'
+  import { projectsColumns } from '@/utils/tableColumns/projectsColumns'
 
-usePageStore().pageData.title = 'Project Page'
+  usePageStore().pageData.title = 'Project Page'
 
-const projectsLoader = useProjectsStore()
-const { projects } = storeToRefs(projectsLoader)
-const { getProjects } = projectsLoader
+  const projectsLoader = useProjectsStore()
+  const { projects } = storeToRefs(projectsLoader)
+  const { getProjects } = projectsLoader
 
-await getProjects()
+  await getProjects()
 
-const { getGroupedCollabs, groupedCollabs } = useCollabs()
+  const { getGroupedCollabs, groupedCollabs } = useCollabs()
 
-getGroupedCollabs(projects.value ?? [])
+  getGroupedCollabs(projects.value ?? [])
 
-const columnsWithCollabs = projectsColumns(groupedCollabs)
+  const columnsWithCollabs = projectsColumns(groupedCollabs)
 </script>
 
 <template>
-  <DataTable v-if="projects" :columns="columnsWithCollabs" :data="projects" />
+  <DataTable
+    v-if="projects"
+    :columns="columnsWithCollabs"
+    :data="projects" />
 </template>

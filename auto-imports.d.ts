@@ -67,6 +67,7 @@ declare global {
   const useFormErrors: typeof import('./src/composables/formErrors')['useFormErrors']
   const useId: typeof import('vue')['useId']
   const useLink: typeof import('vue-router')['useLink']
+  const useMenu: typeof import('./src/composables/menu')['useMenu']
   const useModel: typeof import('vue')['useModel']
   const useMouse: typeof import('@vueuse/core')['useMouse']
   const useMyFetch: typeof import('@vueuse/core')['useFetch']

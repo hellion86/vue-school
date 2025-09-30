@@ -1,106 +1,125 @@
 <script setup lang="ts">
-const route = useRoute('/Projects/[slug]')
-const router = useRouter()
-const projectsLoader = useProjectsStore()
-const { project } = storeToRefs(projectsLoader)
-const { getProject, updateProject } = projectsLoader
+  const route = useRoute('/Projects/[slug]')
+  const router = useRouter()
+  const projectsLoader = useProjectsStore()
+  const { project } = storeToRefs(projectsLoader)
+  const { getProject, updateProject } = projectsLoader
 
-watch(
-  () => project.value?.name,
-  () => {
-    usePageStore().pageData.title = `Project: ${project.value?.name || ''}`
+  watch(
+    () => project.value?.name,
+    () => {
+      usePageStore().pageData.title = `Project: ${project.value?.name || ''}`
+    }
+  )
+
+  await getProject(route.params.slug)
+
+  const updateProjectAndNavigate = async () => {
+    if (!project.value?.name) return
+
+    const newSlag = await updateProject()
+    router.push(`/Projects/${newSlag}`)
   }
-)
 
-await getProject(route.params.slug)
+  const { getProfilesByIds } = useCollabs()
 
-const updateProjectAndNavigate = async () => {
-  if (!project.value?.name) return
-
-  const newSlag = await updateProject()
-  router.push(`/Projects/${newSlag}`)
-}
-
-const { getProfilesByIds } = useCollabs()
- 
-const collabs = project.value?.collaborators ? await getProfilesByIds(project.value?.collaborators) : []
- 
+  const collabs = project.value?.collaborators
+    ? await getProfilesByIds(project.value?.collaborators)
+    : []
 </script>
 
 <template>
-  <Table v-if="project">
-    <TableRow>
-      <TableHead> Name </TableHead>
-      <TableCell>
-       <AppInPlaceEditText v-model="project.name" @commit="updateProjectAndNavigate"/>  
-      </TableCell>
-    </TableRow>
-    <TableRow>
-      <TableHead> Description </TableHead>
-      <TableCell>
-          <AppInPlaceEditTextarea v-model="project.description" @commit="updateProject"/>  
-      </TableCell>
-    </TableRow>
-    <TableRow>
-      <TableHead> Status </TableHead>
-      <TableCell>
-        <AppPlaceEditStatus v-model="project.status" @commit="updateProject"/>
-      </TableCell>
-    </TableRow>
-    <TableRow>
-      <TableHead> Collaborators </TableHead>
-      <TableCell>
-        <div class="flex">
-          <Avatar
-            class="-mr-4 border border-primary hover:scale-110 transition-transform"
-            v-for="collab in collabs"
-            :key="collab.id"
-          >
-            <RouterLink class="w-full h-full flex items-center justify-center" :to="{name: '/user/[username]', params: {username: collab.username}}">
-              <AvatarImage :src="collab.avatar_url || ''" alt="" /> 
-              <AvatarFallback> </AvatarFallback>
-            </RouterLink>
-          </Avatar>
-        </div>
-      </TableCell>
-    </TableRow>
-  </Table>
+  <div>
+    <Table v-if="project">
+      <TableRow>
+        <TableHead>Name</TableHead>
+        <TableCell>
+          <AppInPlaceEditText
+            v-model="project.name"
+            @commit="updateProjectAndNavigate" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableHead>Description</TableHead>
+        <TableCell>
+          <AppInPlaceEditTextarea
+            v-model="project.description"
+            @commit="updateProject" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableHead>Status</TableHead>
+        <TableCell>
+          <AppPlaceEditStatus
+            v-model="project.status"
+            @commit="updateProject" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableHead>Collaborators</TableHead>
+        <TableCell>
+          <div class="flex">
+            <Avatar
+              class="-mr-4 border border-primary hover:scale-110 transition-transform"
+              v-for="collab in collabs"
+              :key="collab.id">
+              <RouterLink
+                class="w-full h-full flex items-center justify-center"
+                :to="{ name: '/user/[username]', params: { username: collab.username } }">
+                <AvatarImage
+                  :src="collab.avatar_url || ''"
+                  alt="" />
+                <AvatarFallback></AvatarFallback>
+              </RouterLink>
+            </Avatar>
+          </div>
+        </TableCell>
+      </TableRow>
+    </Table>
 
-  <section v-if="project?.tasks" class="mt-10 flex flex-col md:flex-row gap-5 justify-between grow">
-    <div class="flex-1">
-      <h2>Tasks</h2>
-      <div class="table-container">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead> Name </TableHead>
-              <TableHead> Status </TableHead>
-              <TableHead> Due Date </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow v-for="task in project.tasks" :key="task.id">
-              <TableCell class="p-0"> 
-              <RouterLink :to="{name: '/Tasks/[id]', params: {id: task.id}}" class="text-left block hover:bg-muted p-4">
-                {{ task.name }} 
-              </RouterLink>  
-              </TableCell>
-              <TableCell> 
-                <AppPlaceEditStatus readonly :model-value="task.status" />
-               </TableCell>
-              <TableCell> {{ task.due_date }} </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+    <section
+      v-if="project?.tasks"
+      class="mt-10 flex flex-col md:flex-row gap-5 justify-between grow">
+      <div class="flex-1">
+        <h2>Tasks</h2>
+        <div class="table-container">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Due Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="task in project.tasks"
+                :key="task.id">
+                <TableCell class="p-0">
+                  <RouterLink
+                    :to="{ name: '/Tasks/[id]', params: { id: task.id } }"
+                    class="text-left block hover:bg-muted p-4">
+                    {{ task.name }}
+                  </RouterLink>
+                </TableCell>
+                <TableCell>
+                  <AppPlaceEditStatus
+                    readonly
+                    :model-value="task.status" />
+                </TableCell>
+                <TableCell>{{ task.due_date }}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
-    <div class="flex-1">
-      <h2>Documents</h2>
-      <div class="table-container">
-        <p class="text-muted-foreground text-sm font-semibold px-4 py-3">
-          This project doesn't have documents yet...
-        </p>
-        <!-- <Table>
+      <div class="flex-1">
+        <h2>Documents</h2>
+        <div class="table-container">
+          <p class="text-muted-foreground text-sm font-semibold px-4 py-3">
+            This project doesn't have documents yet...
+          </p>
+          <!-- <Table>
           <TableHeader>
             <TableRow>
               <TableHead> Name </TableHead>
@@ -114,21 +133,22 @@ const collabs = project.value?.collaborators ? await getProfilesByIds(project.va
             </TableRow>
           </TableBody>
         </Table> -->
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
-<style>
-th {
-  @apply w-[100px];
-}
+<style scoped>
+  th {
+    @apply w-[100px];
+  }
 
-h2 {
-  @apply mb-4 text-lg font-semibold w-fit;
-}
+  h2 {
+    @apply mb-4 text-lg font-semibold w-fit;
+  }
 
-.table-container {
-  @apply overflow-hidden overflow-y-auto rounded-md bg-slate-900 h-80;
-}
+  .table-container {
+    @apply overflow-hidden overflow-y-auto rounded-md bg-slate-900 h-80;
+  }
 </style>
