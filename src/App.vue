@@ -14,6 +14,10 @@
   const AuthLayout = defineAsyncComponent(() => import('./components/Layout/main/AuthLayout.vue'))
   const GuestLayout = defineAsyncComponent(() => import('./components/Layout/main/GuestLayout.vue'))
   const Layout = user.value ? AuthLayout : GuestLayout
+
+  useHead({
+    title: 'Pulse'
+  })
 </script>
 
 <template>
@@ -32,11 +36,10 @@
           name="fade"
           mode="out-in">
           <div
+            :timeout="0"
             class="w-full"
             :key="route.path">
-            <Suspense
-              :timeout="0"
-              v-if="Component">
+            <Suspense v-if="Component">
               <Component :is="Component" />
               <template #fallback>
                 <div

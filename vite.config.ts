@@ -1,13 +1,13 @@
-import { fileURLToPath, URL } from 'node:url'
-import VueRouter from 'unplugin-vue-router/vite'
-import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
+import { fileURLToPath, URL } from 'node:url'
+import tailwind from 'tailwindcss'
 import AutoImport from 'unplugin-auto-import/vite'
-import { VueRouterAutoImports } from 'unplugin-vue-router'
 import Components from 'unplugin-vue-components/vite'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
+import VueRouter from 'unplugin-vue-router/vite'
 
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite'
 // import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
@@ -32,8 +32,9 @@ export default defineConfig({
         'vue',
         VueRouterAutoImports,
         {
-          'pinia': ['defineStore', 'storeToRefs', 'acceptHMRUpdate']
-        }
+          'pinia': ['defineStore', 'storeToRefs', 'acceptHMRUpdate'],
+          '@vueuse/head': ['useHead'],
+        },
       ],
       dts: true,
       viteOptimizeDeps: true,
